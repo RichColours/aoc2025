@@ -57,6 +57,7 @@ fun IntRange.width(): Int = (this.last - this.first) + 1
 fun LongRange.width(): Long = (this.last - this.first) + 1
 
 fun Int.isEven() = this % 2 == 0
+fun Int.isOdd() = this % 2 == 1
 fun Long.isEven() = this % 2 == 0L
 fun Long.isOdd() = this % 2 == 1L
 
