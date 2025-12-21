@@ -55,6 +55,14 @@ class GridTest {
         assertThat(newNewGrid.valueAt(1, 1)).isEqualTo('%')
         assertThat(newNewGrid.elemAt(1, 1).value()).isEqualTo('%')
 
+    }
 
+    @Test
+    fun singleValueMutate() {
+
+        val grid = "@...".toMutableList().toGrid(4)
+        grid.setValueAt(0, 0, 'x')
+
+        assertThat(grid.valueAt(0, 0)).isEqualTo('x')
     }
 }

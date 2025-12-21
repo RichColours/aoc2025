@@ -17,6 +17,11 @@ interface GridDataSource<T> {
     fun row(y: Int): List<T>
 }
 
+interface MutableGridDataSource<T> : GridDataSource<T> {
+
+    fun setSourceValueAt(x: Int, y: Int, v: T)
+}
+
 fun <T> GridDataSource<T>.newGrid() = BaseGrid(this)
 
 open class ListOfStringsDataSource(
@@ -52,6 +57,18 @@ open class FlatListDataSource<T>(
 
     override val height: Int
         get() = flatList.size / width
+}
+
+open class MutableFlatListDataSource<T>(
+    private val flatList: MutableList<T>,
+    private val inputWidth: Int
+) : FlatListDataSource<T>(
+    flatList, inputWidth
+), MutableGridDataSource<T> {
+
+    override fun setSourceValueAt(x: Int, y: Int, v: T) {
+        flatList[(y * inputWidth) + x] = v
+    }
 }
 
 interface Grid<T> : Collection<GridElem<T>> {
@@ -209,9 +226,24 @@ open class BaseGrid<T>(
     }
 }
 
+open class MutableBaseGrid<T>(
+    private val mutableDataSource: MutableGridDataSource<T>
+) : BaseGrid<T>(
+    mutableDataSource
+), MutableGrid<T> {
+
+    override fun setValueAt(x: Int, y: Int, v: T) {
+
+        mutableDataSource.setSourceValueAt(x, y, v)
+    }
+}
+
 fun List<String>.toGrid(): Grid<Char> = BaseGrid(ListOfStringsDataSource(this))
 
 fun <T> List<T>.toGrid(inputWidth: Int): Grid<T> = BaseGrid(FlatListDataSource(this, inputWidth))
+
+fun <T> MutableList<T>.toGrid(inputWidth: Int): MutableGrid<T> =
+    MutableBaseGrid(MutableFlatListDataSource(this, inputWidth))
 
 open class BaseProxyingGrid<T>(
     private val proxied: Grid<T>
