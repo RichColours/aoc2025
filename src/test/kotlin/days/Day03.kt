@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import util.replaceWithDayOfKClass
 import java.math.BigInteger
 import kotlin.io.path.Path
 import kotlin.io.path.useLines
@@ -13,13 +14,13 @@ class Day03 {
     @ParameterizedTest
     @CsvSource(
         value = [
-            "src/test/resources/days/03/samp1.txt, 357",
-            "src/test/resources/days/03/prod1.txt, 17179"
+            "src/test/resources/days/{day}/samp1.txt, 357",
+            "src/test/resources/days/{day}/prod1.txt, 17179"
         ]
     )
     fun day03Question1(inputFile: String, expected: Int) {
 
-        val sum = Path(inputFile).useLines {
+        val sum = Path(inputFile.replaceWithDayOfKClass(this::class)).useLines {
 
             it.map { maxJoltageFromBank(it) }
                 .sum()
@@ -71,13 +72,13 @@ class Day03 {
     @ParameterizedTest
     @CsvSource(
         value = [
-            "src/test/resources/days/03/samp1.txt, 3121910778619",
-            "src/test/resources/days/03/prod1.txt, 170025781683941"
+            "src/test/resources/days/{day}/samp1.txt, 3121910778619",
+            "src/test/resources/days/{day}/prod1.txt, 170025781683941"
         ]
     )
     fun day03Question2(inputFile: String, expected: BigInteger) {
 
-        val sum = Path(inputFile).useLines {
+        val sum = Path(inputFile.replaceWithDayOfKClass(this::class)).useLines {
 
             it.map { maxJoltageFromBank12rStarter(it) }
                 .reduce(BigInteger::add)

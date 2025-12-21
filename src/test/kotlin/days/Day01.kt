@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import util.filePathToLines
+import util.replaceWithDayOfKClass
 import util.section
 import kotlin.io.path.Path
 import kotlin.io.path.useLines
@@ -16,13 +17,13 @@ class Day01 {
     @ParameterizedTest
     @CsvSource(
         value = [
-            "src/test/resources/days/01/samp1.txt, 3",
-            "src/test/resources/days/01/prod1.txt, 980"
+            "src/test/resources/days/{day}/samp1.txt, 3",
+            "src/test/resources/days/{day}/prod1.txt, 980"
         ]
     )
     fun day01Question1(inputFile: String, expected: Int) {
 
-        val numberOfZeroHits = Path(inputFile).useLines {
+        val numberOfZeroHits = Path(inputFile.replaceWithDayOfKClass(this::class)).useLines {
 
             val output = it
                 .map {

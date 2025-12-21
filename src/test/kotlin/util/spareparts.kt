@@ -5,6 +5,7 @@ import java.util.function.Predicate
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
 import kotlin.math.pow
+import kotlin.reflect.KClass
 
 fun filePathToLines(filePath: String): List<String> = Path(filePath).readLines()
 
@@ -208,3 +209,7 @@ fun List<Int>.deriveRanges(): List<IntRange> {
 
     return outputLists
 }
+
+fun day(klass: KClass<*>): String = klass.simpleName!!.filter { it.isDigit() }
+
+fun String.replaceWithDayOfKClass(klass: KClass<*>) = this.replace("{day}", day(klass))

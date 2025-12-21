@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource
 import util.countDigits
 import util.getLeftAndRightHalfDigits
 import util.isEven
+import util.replaceWithDayOfKClass
 import java.math.BigInteger
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
@@ -19,13 +20,13 @@ class Day02 {
     @ParameterizedTest
     @CsvSource(
         value = [
-            "src/test/resources/days/02/samp1.txt, 1227775554",
-            "src/test/resources/days/02/prod1.txt, 32976912643"
+            "src/test/resources/days/{day}/samp1.txt, 1227775554",
+            "src/test/resources/days/{day}/prod1.txt, 32976912643"
         ]
     )
     fun day02Question1(inputFile: String, expected: BigInteger) {
 
-        val oneLine = Path(inputFile).readLines()[0]
+        val oneLine = Path(inputFile.replaceWithDayOfKClass(this::class)).readLines()[0]
 
         val ranges = oneLine.split(',')
             .map {
@@ -65,13 +66,13 @@ class Day02 {
     @ParameterizedTest
     @CsvSource(
         value = [
-            "src/test/resources/days/02/samp1.txt, 4174379265",
-            "src/test/resources/days/02/prod1.txt, 54446379122"
+            "src/test/resources/days/{day}/samp1.txt, 4174379265",
+            "src/test/resources/days/{day}/prod1.txt, 54446379122"
         ]
     )
     fun day02Question2(inputFile: String, expected: BigInteger) {
 
-        val oneLine = Path(inputFile).readLines()[0]
+        val oneLine = Path(inputFile.replaceWithDayOfKClass(this::class)).readLines()[0]
 
         val ranges = oneLine.split(',')
             .map {
