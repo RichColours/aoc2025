@@ -235,3 +235,5 @@ fun mergeRanges(inputRanges: List<LongRange>): List<LongRange> {
         return listOf(LongRange(first.first, max(first.last, second.last)))
     }
 }
+
+fun ClosedRange<Int>.difference(): Int = (this.endInclusive - this.start) + 1
