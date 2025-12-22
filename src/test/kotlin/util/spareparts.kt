@@ -4,6 +4,7 @@ import java.math.BigInteger
 import java.util.function.Predicate
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
+import kotlin.math.max
 import kotlin.math.pow
 import kotlin.reflect.KClass
 
@@ -213,3 +214,24 @@ fun List<Int>.deriveRanges(): List<IntRange> {
 fun day(klass: KClass<*>): String = klass.simpleName!!.filter { it.isDigit() }
 
 fun String.replaceWithDayOfKClass(klass: KClass<*>) = this.replace("{day}", day(klass))
+
+/** Must be sorted input */
+fun mergeRanges(inputRanges: List<LongRange>): List<LongRange> {
+
+    if (inputRanges.size != 2) throw Error("Must be size 2, was ${inputRanges.size}")
+    val first = inputRanges.first()
+    val second = inputRanges.last()
+
+    // Merge second into first
+
+    // If they are not adjacent <aaa> <bbb> then return both in this order
+    // Else just simply take the first left, and then the max of the two right
+
+    if (second.first > first.last + 1) {
+        // Not adjacent
+        return listOf(first, second)
+    } else {
+
+        return listOf(LongRange(first.first, max(first.last, second.last)))
+    }
+}
