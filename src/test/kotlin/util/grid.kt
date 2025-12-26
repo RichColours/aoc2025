@@ -23,6 +23,7 @@ interface MutableGridDataSource<T> : GridDataSource<T> {
 }
 
 fun <T> GridDataSource<T>.newGrid() = BaseGrid(this)
+fun <T> MutableGridDataSource<T>.newGrid() = MutableBaseGrid(this)
 
 open class ListOfStringsDataSource(
     private val listOfRows: List<String>
@@ -358,3 +359,41 @@ open class SingleValueOverrideGridDataSource<T>(
 
 fun <T> GridDataSource<T>.overrideSingleValue(x: Int, y: Int, v: T) =
     SingleValueOverrideGridDataSource(this, x, y, v)
+
+/**
+ * De-duped the list of elems to fill.
+ */
+fun <T> MutableGrid<T>.floodFillFrom(x: Int, y: Int, fill: T, predicateFill: (Grid.GridElem<T>) -> Boolean) {
+
+    // Dijkstra-esque fill
+
+    val filledElems = mutableListOf<GridElem<T>>()
+
+    if (!predicateFill(this.elemAt(x, y)))
+        // Cannot even start
+        return
+
+    this.setValueAt(x, y, fill)
+    filledElems.add(this.elemAt(x, y))
+
+    var debugCount = 1
+
+    do {
+        // Select new elems based on filledElems
+        val nextElems = filledElems.flatMap {
+            it.neighboursHorizontalAndVertical().filter(predicateFill) // TODO keep done set?
+        }
+            .toSet()
+
+        nextElems.forEach {
+            this.setValueAt(it.x, it.y, fill)
+            debugCount++
+        }
+
+        filledElems.clear()
+        filledElems.addAll(nextElems)
+
+    } while (filledElems.isNotEmpty())
+
+    println("Filled $debugCount elements")
+}

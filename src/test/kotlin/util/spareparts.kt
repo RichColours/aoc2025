@@ -1,9 +1,11 @@
 package util
 
 import java.math.BigInteger
+import java.util.function.Function
 import java.util.function.Predicate
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.reflect.KClass
@@ -236,4 +238,89 @@ fun mergeRanges(inputRanges: List<LongRange>): List<LongRange> {
     }
 }
 
-fun ClosedRange<Int>.difference(): Int = (this.endInclusive - this.start) + 1
+fun ClosedRange<Int>.difference(): Int = (this.endInclusive - this.start)
+fun ClosedRange<Int>.differenceClosed(): Int = (this.endInclusive - this.start) + 1
+
+fun IntProgression.absDifference() = abs(this.last - this.first)
+fun IntProgression.absDifferenceClosed() = abs(this.last - this.first) + 1
+
+
+data class PairUnordered<S, T>(
+    val v1: S,
+    val v2: T
+) {
+    override fun equals(other: Any?): Boolean {
+
+        if (other is PairUnordered<S, T>) {
+            return (other.v1 == this.v1 && other.v2 == this.v2) || (other.v1 == this.v2 && other.v2 == this.v1)
+        } else {
+            return false
+        }
+    }
+
+    override fun hashCode(): Int {
+        return v1.hashCode() * v2.hashCode()
+    }
+}
+
+fun <T> combinationsCommutative(xs: List<T>): Sequence<PairUnordered<T, T>> {
+
+    val totalCount = (xs.size * (xs.size - 1)) / 2
+
+    var xCursor = 1
+    var yCursor = 0
+
+    var nextIndex = 0
+
+    return generateSequence {
+
+        if (nextIndex == totalCount) {
+            null
+        } else {
+
+            val p1 = xs[yCursor]
+            val p2 = xs[xCursor]
+
+            xCursor++
+
+            if (xCursor == xs.size) {
+                yCursor++
+                xCursor = yCursor + 1
+            }
+
+            nextIndex++
+            PairUnordered(p1, p2)
+        }
+    }
+}
+
+fun Int.autoProgressionTo(that: Int) =
+    if (this <= that)
+        IntProgression.fromClosedRange(this, that, 1)
+    else
+        IntProgression.fromClosedRange(this, that, -1)
+
+fun <T> sequenceNOf(count: Int, generator: Function<Int, T>): Sequence<T> {
+
+    var nextI = 0
+
+    return generateSequence {
+        if (nextI == count)
+            null
+        else
+            generator.apply(nextI++)
+    }
+}
+
+fun <T> List<T>.allAdjacentPairs(): Sequence<Pair<T, T>> {
+
+    var nextI = 0
+
+    return generateSequence {
+        if (nextI < this.size) {
+            Pair(this[nextI], this[((nextI++ + 1) % this.size)])
+        } else {
+            null
+        }
+    }
+}

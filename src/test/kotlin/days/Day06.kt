@@ -4,7 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import util.difference
+import util.differenceClosed
 import util.replaceWithDayOfKClass
 import java.math.BigInteger
 import kotlin.io.path.Path
@@ -127,7 +127,7 @@ class Day06 {
                         if (lineIndex == 0) {
                             val strings = mutableListOf<StringBuilder>()
                             groupStrings.add(strings)
-                            (1..group.difference()).forEach { _ ->
+                            (1..group.differenceClosed()).forEach { _ ->
                                 strings.add(StringBuilder())
                             }
                         }
