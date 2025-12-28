@@ -324,3 +324,66 @@ fun <T> List<T>.allAdjacentPairs(): Sequence<Pair<T, T>> {
         }
     }
 }
+
+fun Long.flipBits(bits: List<Int>): Long {
+
+    return bits.fold(BigInteger.valueOf(this)) { acc, it ->
+        acc.flipBit(it)
+    }
+        .toLong()
+}
+
+fun combinationsExclusive(numChoices: Int, numElements: Int): Sequence<List<Int>> {
+
+    if (numElements < numChoices)
+        throw Error("Not enough elements $numElements for the choices $numChoices")
+
+    // [0] is LSB (most changing)
+    // [numElements-1] is MSB (least changing)
+
+    // Initialise with 0..numE-1 progression at [MSB..LSB]
+    val indexes = IntArray(numChoices)
+    (0..<numChoices).forEach {
+        indexes[it] = (numChoices - 1) - it
+    }
+
+    // Initialise column maxes
+    // numElem-V..numElem-1
+    val choiceMaxIndexes = IntArray(numChoices)
+    (0..<numChoices).forEach {
+        choiceMaxIndexes[it] = (numElements - 1) - it
+    }
+    // Fiddle [0] -1 ready for first inc operation
+    indexes[0]--
+
+    fun roll(i: Int): Int? {
+
+        return if (i < indexes.size) {
+
+            // In my column, if i can increase, then do so and return true
+            // Else return the next column's response. If a roll happened i need to reset my own column (to what??)
+            return if (indexes[i] < choiceMaxIndexes[i]) {
+                (++indexes[i])
+            } else {
+
+                val next: Int? = roll(i + 1)
+                if (next != null) {
+                    // Next higher bit rolled - i need to reset myself
+                    indexes[i] = next + 1
+                    indexes[i]
+                } else {
+                    // Could not roll, end of the line
+                    null
+                }
+
+            }
+        } else {
+            null
+        }
+    }
+
+    return generateSequence {
+        val readable = roll(0)
+        if (readable != null) indexes.toList().reversed() else null
+    }
+}
