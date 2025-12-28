@@ -17,7 +17,7 @@ class Day06 {
     @CsvSource(
         value = [
             "src/test/resources/days/{day}/samp1.txt, 4277556",
-            "src/test/resources/days/{day}/prod1.txt, -1"
+            "src/test/resources/days/{day}/prod1.txt, 4580995422905"
         ]
     )
     fun day06Question1(inputFile: String, expected: BigInteger) {
